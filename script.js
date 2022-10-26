@@ -1,10 +1,11 @@
 const BaseUrl = 'https://rickandmortyapi.com/api';
 const divObservadora = document.querySelector('.observador');
+let page = 1;
 
-async function dataAPI() {
+async function dataAPI(currentPage) {
   let response = []
   try {
-    const request = await fetch(`${BaseUrl}/character`);
+    const request = await fetch(`${BaseUrl}/character?page=${currentPage}`);
     if (request.ok) {
       response = await request.json()
     } else {
@@ -28,3 +29,11 @@ async function dataAPI() {
 }
 
 dataAPI();
+
+const observer = new IntersectionObserver((entries) => {
+  if (entries.some((entry) => entry.isIntersecting)) {
+    dataAPI(page++);
+  }
+});
+
+observer.observe(divObservadora);
